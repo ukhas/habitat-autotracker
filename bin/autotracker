@@ -15,10 +15,10 @@ except ImportError:
     import habitat
 
 try:
-    import habitat_extensions
+    import autotracker
 except ImportError:
     sys.path.append(root)
 
-from habitat.utils.startup import main
-from habitat_extensions.autotracker.controller import AutoTracker
-main(AutoTracker)
+from habitat.utils.startup import launch
+from autotracker.controller import AutoTracker
+launch(AutoTracker)
