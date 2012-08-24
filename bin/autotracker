@@ -19,6 +19,6 @@ try:
 except ImportError:
     sys.path.append(root)
 
-from habitat.utils.startup import launch
+from habitat.utils.startup import main
 from autotracker.controller import AutoTracker
-launch(AutoTracker)
+main(AutoTracker)
