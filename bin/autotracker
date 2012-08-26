@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys
 import os.path
@@ -8,8 +8,8 @@ root = os.path.realpath(os.path.join(__file__, "../../"))
 try:
     import habitat
 except ImportError:
-    # Assumes habitat and habitat_extensions have been cloned in the same parent
-    # directory
+    # Assumes habitat and habitat-autotracker have been cloned in the same
+    # parent directory
 
     sys.path.append(os.path.join(os.path.dirname(root), "habitat"))
     import habitat
