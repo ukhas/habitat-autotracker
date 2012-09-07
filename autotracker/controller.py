@@ -14,7 +14,7 @@ class AutoTracker(object):
         self.limits = cfg["limits"]
         loc = cfg["location"]
         self.listener = (loc["latitude"], loc["longitude"], loc["altitude"])
-        self.track_callsign = cfg["track_callsign"]
+        self.track_payload_id = cfg["track_payload_id"]
         self.period = cfg["period"]
         self.old_tgt = None
         if "max_age" in cfg:
@@ -60,22 +60,27 @@ class AutoTracker(object):
                 raise ValueError("Out of range: {0} {1}".format(key, aim[key]))
 
     def get_position(self):
-        r = self.db.view("habitat/payload_telemetry",
-                         startkey=[self.track_callsign, "end"],
+        r = self.db.view("payload_telemetry/payload_time",
+                         startkey=[self.track_payload_id, "end"],
                          descending=True, limit=1, include_docs=True)
 
         r = list(r)
-        if len(r) != 1:
+        if len(r) != 1 or r[0]["key"][0] != self.track_payload_id:
             raise ValueError("Could not get balloon position")
         r = r[0]
 
         t = r["key"][1]
         if self.max_age is not None:
             if abs(time.time() - t) > self.max_age:
-                raise ValueError("Position is more too old (max_age)")
+                raise ValueError("Position is too old (max_age)")
 
         d = r["doc"]["data"]
-        balloon = (d["latitude"], d["longitude"], d["altitude"])
+        if d.get("_fix_invalid", False):
+            raise ValueError("Fix info is invalid")
+        try:
+            balloon = (d["latitude"], d["longitude"], d["altitude"])
+        except KeyError:
+            raise ValueError("Balloon does not have lat/lon/alt")
 
         logger.debug("Balloon is at " + repr(balloon))
 
