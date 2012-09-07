@@ -15,7 +15,7 @@ autotracker:
         elevation:
             min: -3
             max: 60
-    track_callsign: A1
+    track_payload_id: 8285c24fabf8a73df8f7ec10c00c703e
     serial:
         file: /dev/ttyUSB0
         format: simple
